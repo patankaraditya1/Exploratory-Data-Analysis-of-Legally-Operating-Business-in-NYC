@@ -1,0 +1,323 @@
+********************************************************************
+CREATE TABLE mydb.NYCLicenseData(
+DCALicenseNumber STRING,
+LicenseType STRING,
+ExpDate String,
+Status STRING,
+LicenseCreationDate STRING,
+Industry STRING,
+BusinessName STRING,
+BusinessNAME2 STRING,
+Building STRING,
+Street STRING,
+SecStreet STRING,
+City STRING,
+State STRING,
+Zip INT,
+PhoneNum STRING,
+AddressBorough STRING,
+BoroughCode INT,
+CommunityBoard INT,
+CouncilDistrict INT,
+BIN INT,
+BBL INT,
+NTA STRING,
+CencusTract INT,
+Detail STRING,
+Longitude STRING,
+Lattitude STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+Location '/user/hive/warehouse/mydb.db/NYCLicenseData';
+
+*********************************************************************
+Data Loading:
+load data Inpath '/data/NYCLicenseData/Legally_Operating_Businesses.csv' into table mydb.NYCLicenseData;
+
+
+*********************************************************************
+Problem Statement:
+Select the records for Garage Industry type;
+
+hive> select * from mydb.NYCLicenseData where Industry LIKE 'Ga%' limit 5;
+OK
+1248251-DCA	Business	03/31/2017	Inactive	02/13/2007	Garage	1749-1753 FIRST AVENUE GARAGE CORP.		354	E 91ST ST		NEW YORK	NY	10128	2123690284	Manhattan1108	5	1087664	1015530027	MN32	154	"Vehicle Spaces: 39	 Bicycle Spaces:"	-73.94815594145861
+0972256-DCA	Business	03/31/2019	Active	09/25/1997	Garage	EASTSIDE PARKING LLC		45	SUTTON PL S		NEW YORK	NY	10022	2123558890	Manhattan	1	106	51040721	1013710014	MN19	10601	"Vehicle Spaces: 88	 Bicycle Spaces: 8"	-73.9618117706841
+0883259-DCA	Business	03/31/2017	Inactive	03/26/1997	Garage	TAURUS MANAGEMENT CORP.	TAURUS PARKING  GARAGE	906	UNION ST		BROOKLYN	NY	11215	7188661000	Brooklyn	3306	33	3024700	NULL	BK37	165	"Vehicle Spaces: 70	 Bicycle Spaces: 7"	-73.97167197890634
+0965355-DCA	Business	03/31/2015	Inactive	07/01/1997	Garage	"CENTRAL PARKING SYSTEM OF NEW YORK	INC."		132-146	W 51ST ST		NEW YORK	NULL	10019	2126296602	NULL	NULL	NULL	NULL	NULL		NULL		"Vehicle Spaces: 209	 Bicycle Spaces: 20"
+0736268-DCA	Business	03/31/2017	Inactive	04/03/1997	Garage	PLAZA GARAGE CORP.	GGMC	1751	2ND AVE		NEW YORK	NY	10128	212-996-6363	Manhattan	1	108	51048914	1015370022	MN32	154	"Vehicle Spaces: 104	 Bicycle Spaces: 10"	-73.94931447952392
+Time taken: 0.051 seconds, Fetched: 5 row(s)
+
+
+*********************************************************************
+Problem Statement
+Retrurn count of licences by License Type;
+
+hive> select LicenseType,count(*) from mydb.NYCLicenseData group by LicenseType;
+Query ID = cloudera_20180310183838_6f32899f-7560-4707-b2b5-0d1e74b23879
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1520302464832_0025, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1520302464832_0025/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1520302464832_0025
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2018-03-10 18:38:40,258 Stage-1 map = 0%,  reduce = 0%
+2018-03-10 18:38:51,556 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.02 sec
+2018-03-10 18:39:02,586 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.44 sec
+MapReduce Total cumulative CPU time: 3 seconds 440 msec
+Ended Job = job_1520302464832_0025
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.44 sec   HDFS Read: 24766344 HDFS Write: 47 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 440 msec
+OK
+Business	78711
+Individual	43715
+License Type	1
+Time taken: 33.353 seconds, Fetched: 3 row(s)
+
+
+
+*********************************************************************
+Problem Statement
+zip code wise , Display  the number of businesses where no of business > 100;
+
+hive> select Zip,count(*) as NoOfBusiness from mydb.NYCLicenseData group by Zip having NoOfBusiness>100;
+Query ID = cloudera_20180310190505_3986dc02-d17a-4d8a-a6bb-476adc7802f3
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1520302464832_0028, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1520302464832_0028/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1520302464832_0028
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2018-03-10 19:05:57,549 Stage-1 map = 0%,  reduce = 0%
+2018-03-10 19:06:07,460 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.28 sec
+2018-03-10 19:06:17,020 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 4.1 sec
+MapReduce Total cumulative CPU time: 4 seconds 100 msec
+Ended Job = job_1520302464832_0028
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 4.1 sec   HDFS Read: 24766828 HDFS Write: 1469 SUCCESS
+Total MapReduce CPU Time Spent: 4 seconds 100 msec
+OK
+NULL	70500
+10001	510
+10002	507
+10003	451
+10009	251
+10010	251
+10011	401
+10012	226
+10013	440
+10014	300
+10016	403
+10017	235
+10018	327
+10019	457
+10021	303
+10022	367
+10023	234
+10024	274
+10025	358
+10026	129
+10027	276
+10028	257
+10029	391
+10031	257
+10032	252
+10033	286
+10034	245
+10035	229
+10036	600
+10038	157
+10040	220
+10065	235
+10075	170
+10128	275
+10301	199
+10302	185
+10303	158
+10304	181
+10305	289
+10306	269
+10309	244
+10310	244
+10312	216
+10314	442
+10451	322
+10452	413
+10453	405
+10454	207
+10455	298
+10456	380
+10457	449
+10458	495
+10459	266
+10460	288
+10461	396
+10462	485
+10463	258
+10465	161
+10466	290
+10467	468
+10468	328
+10469	295
+10472	356
+10473	137
+10474	139
+10475	123
+11040	139
+11101	421
+11102	221
+11103	379
+11104	182
+11105	301
+11106	312
+11201	362
+11203	350
+11204	442
+11205	201
+11206	333
+11207	558
+11208	459
+11209	453
+11210	232
+11211	442
+11212	410
+11213	274
+11214	604
+11215	374
+11216	271
+11217	262
+11218	469
+11219	432
+11220	795
+11221	393
+11222	323
+11223	525
+11224	264
+11225	205
+11226	512
+11228	215
+11229	443
+11230	436
+11231	196
+11232	297
+11233	254
+11234	479
+11235	513
+11236	345
+11237	400
+11238	283
+11249	105
+11354	509
+11355	355
+11356	176
+11357	196
+11358	198
+11361	163
+11364	107
+11365	138
+11367	122
+11368	714
+11369	136
+11370	101
+11372	576
+11373	449
+11374	199
+11375	310
+11377	550
+11378	326
+11379	186
+11385	783
+11412	118
+11413	144
+11414	106
+11416	209
+11417	211
+11418	347
+11419	499
+11420	300
+11421	264
+11423	147
+11428	121
+11429	121
+11432	529
+11433	167
+11434	241
+11435	408
+11691	134
+Time taken: 29.425 seconds, Fetched: 147 row(s)
+
+
+*********************************************************************
+Problem Statement
+give distinct count of cities.	
+
+hive> select count(distinct city) from mydb.NYCLicenseData;
+Query ID = cloudera_20180310193030_abc40fe5-d36a-49d0-90d5-023301b65571
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1520302464832_0030, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1520302464832_0030/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1520302464832_0030
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2018-03-10 19:30:56,708 Stage-1 map = 0%,  reduce = 0%
+2018-03-10 19:31:05,428 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.03 sec
+2018-03-10 19:31:15,132 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.64 sec
+MapReduce Total cumulative CPU time: 3 seconds 640 msec
+Ended Job = job_1520302464832_0030
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.64 sec   HDFS Read: 24766388 HDFS Write: 5 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 640 msec
+OK
+1898
+Time taken: 28.079 seconds, Fetched: 1 row(s)
+hive> 
+
+
+*********************************************************************
+Problem Statement
+Give count of businesses with expired licenses.
+hive> select count(*) from mydb.NYCLicenseData where split(ExpDate,'/')[2]<=2018 and split(ExpDate,'/')[1]<=10 and split(ExpDate,'/')[0]<3;
+Query ID = cloudera_20180310194343_6f8b9330-6282-4dea-9f66-0d3d943fa9f9
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1520302464832_0033, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1520302464832_0033/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1520302464832_0033
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2018-03-10 19:43:21,268 Stage-1 map = 0%,  reduce = 0%
+2018-03-10 19:43:31,281 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.82 sec
+2018-03-10 19:43:40,107 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 4.25 sec
+MapReduce Total cumulative CPU time: 4 seconds 250 msec
+Ended Job = job_1520302464832_0033
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 4.25 sec   HDFS Read: 24767985 HDFS Write: 3 SUCCESS
+Total MapReduce CPU Time Spent: 4 seconds 250 msec
+OK
+26
+Time taken: 28.253 seconds, Fetched: 1 row(s)
+hive> 
